@@ -18,13 +18,22 @@
 <div class="reveal">
     <div class="slides">
         <section>
+            <a href="https://digital-spectr.ru/event/perm-dev-meetup-1" target="_blank"><img
+                    src="static/img/meetup_logo.png" alt="{Perm} DEV Meetup #1"></a>
             <h3>MySQL и PostgreSQL</h3>
-            <p>что «под капотом» и почему это важно знать прикладному разработчику.</p>
+            <p>что «под капотом» и почему это важно знать прикладному разработчику</p>
+
+            <footer>Никита Стрелков, разработчик e-commerce-подразделения, VK</footer>
+            <a href="https://digital-spectr.ru/" target="_blank">
+                <img src="static/img/org_1.png" alt="DigitalSpectr"></a>
+            <a href="https://tagline.ru/" target="_blank">
+                <img src="static/img/org_2.png" alt="Tagline">
+            </a>
         </section>
 
         <section>
             <h3>Обо мне</h3>
-            <p>Стрелков Никита<br>Разработчик в проекте PayDay</p>
+            <p>Никита Стрелков<br>Разработчик в проекте PayDay</p>
             <ul>
                 <li>Go/PHP разработчик</li>
                 <li>8+ лет в программировании, весь продакшен опыт на backend</li>
@@ -163,7 +172,9 @@
             <aside class="notes">
                 Под понятием "PostgreSQL server" обычно подразумевается набор процессов:
                 <ul>
-                    <li>Процесс "postgres server" (ранее postmaster), являющийся родительским для всех остальных процессов</li>
+                    <li>Процесс "postgres server" (ранее postmaster), являющийся родительским для всех остальных
+                        процессов
+                    </li>
                     <li>Процессы postgres backend", которые создаются под каждое соединение</li>
                     <li>Набор служебных процессов, отвечающих за разные компоненты и функции сервера</li>
                     <li>А взаимодействуют они все через общую память</li>
@@ -274,7 +285,8 @@ Variable_name: Threads_running
                 </thead>
                 <tbody>
                 <tr>
-                    <td><a href="https://www.pgpool.net/">PGPool-II</a> <br>и/или<br> <a href="https://www.pgbouncer.org/">PgBouncer</a></td>
+                    <td><a href="https://www.pgpool.net/">PGPool-II</a> <br>и/или<br> <a
+                            href="https://www.pgbouncer.org/">PgBouncer</a></td>
                     <td>Client-side<br>connection pool</td>
                 </tr>
 

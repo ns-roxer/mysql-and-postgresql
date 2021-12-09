@@ -1,0 +1,19 @@
+@font-face {
+    font-family: vkSlideHeaders;
+    src: url("static/vk.education/fonts/VKSans/VKSansDisplayMedium.otf") format("opentype");
+}
+
+@font-face {
+    font-family: vkSlideMain;
+    src: url("static/vk.education/fonts/SFProText/SFProText-Light.ttf");
+}
+
+.reveal h3 {
+    font-family: vkSlideHeaders, sans-serif;
+    color: #0075ff;
+    word-spacing: 15pt;
+}
+
+.reveal .slides section {
+    font-family: vkSlideMain, sans-serif;
+}

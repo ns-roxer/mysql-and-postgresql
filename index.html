@@ -58,7 +58,7 @@
                 <li>Процессная/потоковая модель сервера</li>
                 <li>Путь выполнения запроса</li>
                 <li>MVCC</li>
-                <li>B-Tree индексы</li>
+                <li>Индексы</li>
             </ul>
             <aside class="notes">
                 Надо понимать, что СУБД - это очень комплексные и сложные системы, с большим количеством компонентов и
@@ -408,7 +408,7 @@ Variable_name: Threads_running
 
         <section>
             <h3 class="slide-header">Статистика по атрибутам</h3>
-            <table class="r-fit-text">
+            <table class="r-fit-text" style="table-layout: fixed; width: 100%;">
                 <thead>
                 <tr>
                     <th>MySQL</th>
@@ -450,7 +450,7 @@ Variable_name: Threads_running
 
         <section>
             <h3 class="slide-header">Межатрибутная статистика</h3>
-            <table>
+            <table style="table-layout: fixed; width: 100%;">
                 <thead>
                 <tr>
                     <th>MySQL</th>
@@ -1045,7 +1045,8 @@ Variable_name: Threads_running
 
                 In case of InnoDB, the old version of the changed row is kept in a separate tablespace/storage (called
                 undo segment). <b>So unlike PostgreSQL, InnoDB keeps only the latest version of rows in the main storage
-                area and the older version is kept in the undo segment.</b> Row versions from the undo segment are used to
+                area and the older version is kept in the undo segment.</b> Row versions from the undo segment are used
+                to
                 undo operation in case of rollback and for reading an older version of rows by READ statement depending
                 on the isolation level.
 
@@ -1165,9 +1166,165 @@ Variable_name: Threads_running
 
         <section>
             <h3 class="r-fit-text">Индексы</h3>
+            <aside class="notes">
+                Database Index, as the name suggests, maintains an index to the actual data and thereby improves
+                performance to retrieve data from the actual table. In a more database terminology, the index allows
+                fetching page containing indexed data in a very minimal traversal as data is sorted in specific order.
+                Index benefit comes at the cost of additional storage space in order to write additional data. Indexes
+                are specific to the underlying table and consist of one or more keys (i.e. one or more columns of the
+                specified table). There are primarily two types of index architecture
+            </aside>
+        </section>
+
+        <section>
+            <h3 class="slide-header">Индекс</h3>
+            <p>Два основных типа архитектуры индекса:</p>
+            <ul>
+                <li>Кластерный индекс</li>
+                <li>Некластерный индекс</li>
+            </ul>
             <aside class="notes"></aside>
         </section>
 
+        <section>
+            <h3 class="slide-header">Кластерный индекс</h3>
+            <p>Проиндексированное значение хранится вместе с данными.</p>
+            <p>Данные хранятся в отсортированном виде в порядке заданном индексом.</p>
+            <p>У таблицы может быть только один индекс такого типа.</p>
+            <aside class="notes"></aside>
+        </section>
+
+        <section>
+            <h3 class="slide-header">Некластерный индекс</h3>
+            <p>Проиндексированные значения и данные хранятся отдельно.</p>
+            <p>Индекс содержит указатели на остальные данные строки.</p>
+            <p>Так же известен, как "вторичный индекс" (secondary index).</p>
+            <aside class="notes"></aside>
+        </section>
+
+        <section>
+            <h3 class="slide-header">Индексы в PostgreSQL</h3>
+            <p>Все индексы являются некластерными(вторчиными), так как данные хранятся отдельно в табличной куче (Table
+                Heap)</p>
+            <img src="static/img/pg_index.png" alt="">
+            <p>Есть механизм кластеризации данных по индексу</p>
+            <aside class="notes">PostgreSQL supports only non-clustered index. That means index data and complete data
+                (here onward referred to as heap data) are stored in a separate storage. Non-clustered indexes are like
+                “Table of Content” in any document, wherein first we check the page number and then check those page
+                numbers to read the whole content. In order to get the complete data based on an index, it maintains a
+                pointer to corresponding heap data. It's the same as after knowing page number, it needs to go to that
+                page and get the actual content of the page.
+
+                For example, consider a table with three columns and an index on column ID. In order to READ the data
+                based on the key ID=2, first, the Indexed data with the ID value 2 is searched. This contains a pointer
+                (called as Item Pointer) in terms of the page number (i.e. block number) and offset of data within that
+                page. In the current example, the index points to page number 5 and the second line item in the page
+                which in turn keeps offset to the whole data(2,”Shaun”,100). Notice whole data also contains the indexed
+                data which means the same data is repeated in two storages.
+
+                How does INDEX help to improve performance? Well, in order to select any INDEX record, it does not scan
+                all pages sequentially, rather it just needs to partially scan some of the pages using the underlying
+                Index data structure. But there is a twist, since each record found from Index data, it needs to look in
+                Heap data for whole data, which causes a lot of random I/O and it’s considered to perform slower than
+                Sequential I/O. So only if a small percentage of records are getting selected (which decided based on
+                the PostgreSQL optimizer Cost), then only PostgreSQL chooses Index Scan otherwise even though there is
+                an index on the table, it continues to use Sequence Scan.
+
+                In summary, though Index creation speeds up the performance ,it should be carefully chosen as it has
+                overhead in terms of storage, degraded INSERT performance.
+
+                Now we may wonder, in-case we need only the index part of data, can we fetch only from the index storage
+                page? Well, the answer to this is directly related to how MVCC works on the index storage as explained
+                next.
+
+                Like Heap pages, index page maintains multiple versions of index tuple but it does not
+                maintain visibility information. As explained in my previous MVCC blog, in order to decide suitable
+                visible version of tuples, it requires comparing transaction. The transaction which
+                inserted/updated/deleted tuple are maintained along with heap tuple but the same is not maintained with
+                index tuple. This is purely done to save storage and it’s a trade-off between space and performance.
+
+                Now coming back to the original question, since the visibility information in Index tuple is not there,
+                it needs to consult the corresponding heap tuple to see if the data selected is visible. So even though
+                other parts of the data from heap tuple is not required, still need to access the heap pages to check
+                visibility. But again, there is a twist in-case all tuples on a given page (page pointed by index i.e.
+                ItemPointer) are visible then does not need to refer each item of Heap page for “visibility check” and
+                hence the data can be returned only from the Index page. This special case is called “Index Only Scan”.
+                In order to support this, PostgreSQL maintains a visibility map for each page to check the page level
+                visibility.
+            </aside>
+        </section>
+
+        <section>
+            <h3 class="slide-header">Индексы в PostgreSQL</h3>
+            <p>Есть поддержка составных, частичных и функциональных индексов.</p>
+            <pre><code class="" data-line-numbers="|1-2|3-4|5-6">CREATE INDEX idx_users_age_gender
+                ON people(age, gender); -- составной
+CREATE INDEX idx_users_age_partial
+                ON people(age) where age >= 25; -- частичный
+CREATE INDEX idx_users_names
+                ON people(LOWER(name)); -- функциональный
+            </code></pre>
+            <aside class="notes">
+            </aside>
+        </section>
+
+        <section>
+            <h3 class="slide-header">Индексы в PostgreSQL</h3>
+            <p>Большой выбор встроенных типов индексов:</p>
+            <ul>
+                <li>B-Tree Index</li>
+                <li>Hash Index</li>
+                <li>GIN (Generalized Inverted Index)</li>
+                <li>GiST (Generalized Search Tree)</li>
+                <li>SP-GiST (Space Partitioned GiST)</li>
+                <li>(BRIN) Block Range Index</li>
+            </ul>
+            <aside class="notes"></aside>
+        </section>
+
+        <section>
+            <h3 class="slide-header">Индексы в MySQL</h3>
+            <p>В таблице может быть 1 кластерный и несколько некластерных вторичных индексов.</p>
+            <img src="static/img/innodb_index.png" alt="">
+            <aside class="notes">Clustered Index is a special kind of index in InnoDB. Here the indexed data is not
+                stored separately rather it is part of the whole row data. In other words, the clustered index just
+                forces the table data to be sorted physically using the key column of the index. It can be considered as
+                “Dictionary”, where data is sorted based on the alphabet.
+
+                Since the clustered index sort rows using an index key, there can be only one clustered index. Also,
+                there must be one clustered index as InnoDB uses same to optimally manipulate data during various data
+                operations.
+
+                Clustered index are created automatically (as part of table create) using one of the table columns as
+                per below priority:
+
+                Using the primary key if the primary key is mentioned as part of the table creation.
+                Chooses any unique column where all the key columns are NOT NULL.
+                Otherwise internally generates a hidden clustered index on a system column which contains the row ID of
+                each row.
+                Unlike PostgreSQL non-clustered index, InnoDB access a row using clustered index faster because the
+                index search leads directly to the page with all row data and hence avoiding random I/O.
+
+                Also getting the table data in sorted order using the clustered index is very fast as all data are
+                already sorted and also whole data is available.
+            </aside>
+        </section>
+
+        <section>
+            <h3 class="slide-header">Индексы в MySQL</h3>
+            <ul>
+                <li>Поддерживает в явном виде только B+ Tree тип индекса.</li>
+                <li>Hash индексы используются самим движком InnoDB в служебных целях.</li>
+                <li>Поддерживает Index Hints</li>
+            </ul>
+            <pre><code class="" data-line-numbers="|">SELECT * FROM table1 USE INDEX (col1_index,col2_index)
+  WHERE col1=1 AND col2=2 AND col3=3;
+
+SELECT * FROM table1 IGNORE INDEX (col3_index)
+  WHERE col1=1 AND col2=2 AND col3=3;
+            </code></pre>
+            <aside class="notes"></aside>
+        </section>
 
         <section>
             <h3 class="r-fit-text">Спасибо за внимание!</h3>
@@ -1192,7 +1349,7 @@ Variable_name: Threads_running
                 <li>
                     <a href="https://severalnines.com/database-blog/postgresql-index-vs-innodb-index-understanding-differences">Postgresql
                         index vs innodb index understanding differences</a></li>
-                <li><a href="https://github.com/ChrisAntognini"></a></li>
+                <li><a href="https://github.com/ChrisAntognini">https://github.com/ChrisAntognini</a></li>
             </ul>
             <aside class="notes"></aside>
         </section>

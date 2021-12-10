@@ -11,9 +11,95 @@
 .reveal h3 {
     font-family: vkSlideHeaders, sans-serif;
     color: #0075ff;
-    word-spacing: 15pt;
+    word-spacing: 16pt;
 }
 
 .reveal .slides section {
     font-family: vkSlideMain, sans-serif;
+}
+
+tr.read {
+    background: linear-gradient(
+            -45deg,
+            transparent 49.9%,
+            skyblue 49.9%,
+            skyblue 60%,
+            transparent 60%
+    ), linear-gradient(
+            -45deg,
+            skyblue 10%,
+            transparent 10%
+    );
+    background-size: 8px 8px;
+}
+
+tr.update {
+    background-color: #ffb !important;
+}
+
+tr.delete {
+    background-color: #fbb !important;
+}
+
+tr.insert {
+    background-color: #bfb !important;
+    font-weight: bold;
+}
+
+.changed {
+    font-weight: bold;
+}
+
+.obsolete {
+    font-style: italic;
+}
+
+.label-r {
+    position: absolute;
+    padding-top: 2px;
+    height: 36px;
+    font-size: 80%;
+    font-weight: bold;
+    font-style: normal;
+}
+
+.read .label-r {
+    background-color: #bbf;
+}
+
+.read .label-r:before {
+    border-right-color: #bbf;
+}
+
+.label-r {
+    right: 100px;
+    width: 99px;
+    padding-left: 6px;
+}
+
+.label-r:before {
+    content: "";
+    position: absolute;
+    top: 0px;
+    right: 98px;
+    height: 36px;
+    width: 19px;
+    border: 18px solid transparent;
+    border-left: 0;
+}
+
+.tx-r, .tx-g, .tx-y {
+    text-align: center;
+}
+
+.tx-r {
+    background-color: #fbb !important;
+}
+
+.tx-g {
+    background-color: #bfb !important;
+}
+
+.tx-y {
+    background-color: #ffb !important;
 }

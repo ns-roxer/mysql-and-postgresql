@@ -24,15 +24,15 @@
             <p>что «под капотом» и почему это важно знать прикладному разработчику</p>
 
             <footer style="font-size: 20pt">Никита Стрелков, разработчик e-commerce подразделения, VK</footer>
-<!--            <a href="https://digital-spectr.ru/" target="_blank">-->
-<!--                <img src="static/img/org_1.png" alt="DigitalSpectr"></a>-->
-<!--            <a href="https://tagline.ru/" target="_blank">-->
-<!--                <img src="static/img/org_2.png" style="max-width: 30%" alt="Tagline">-->
-<!--            </a>-->
+            <!--            <a href="https://digital-spectr.ru/" target="_blank">-->
+            <!--                <img src="static/img/org_1.png" alt="DigitalSpectr"></a>-->
+            <!--            <a href="https://tagline.ru/" target="_blank">-->
+            <!--                <img src="static/img/org_2.png" style="max-width: 30%" alt="Tagline">-->
+            <!--            </a>-->
         </section>
 
         <section>
-            <h3>Обо мне</h3>
+            <h3 class="slide-header">Обо мне</h3>
             <p>Никита Стрелков<br>Разработчик в проекте PayDay</p>
             <ul>
                 <li>Go/PHP разработчик</li>
@@ -52,59 +52,42 @@
         </section>
 
         <section>
-            <h3>О чем доклад</h3>
+            <h3 class="slide-header">О чем доклад</h3>
             <ul>
                 <li>Сравнение функций</li>
                 <li>Процессная/потоковая модель сервера</li>
                 <li>Путь выполнения запроса</li>
-                <li>Реализация требований ACID</li>
+                <li>MVCC</li>
                 <li>B-Tree индексы</li>
             </ul>
             <aside class="notes">
+                Надо понимать, что СУБД - это очень комплексные и сложные системы, с большим количеством компонентов и
+                уровней абстракций.<br>
+                И если смотреть совсем вглубь, то, конечно, окажется, что различий очень много и за 40минутный доклад
+                такой объем информации не охватить.<br>
+                Поэтому я решил ограничиться вот таким набором тем, которые по МОЕМУ ЛИЧНОМУ СУБЪЕТКИВНОМУ МНЕНИЮ
+                являются очень важными для сравнения.
             </aside>
         </section>
 
         <section>
-            <h3 class="slide-header">Почему?</h3>
-            <ul>
-                <li>MySQL и PostgreSQL одни из самых популярных реляционных СУБД</li>
-                <li>Многим в течение карьеры сталкиваются с необходимостью</li>
-                <li></li>
-            </ul>
+            <h3 class="r-fit-text">Почему, а главное зачем?</h3>
             <aside class="notes">Так как Mysql и PG одни из самых популярных реляционных субд, многим разработчикам в
                 течение карьеры приходится
                 либо вставать перед выбором субд для нового проекта или его части,
                 либо переходить с одной субд на другую,
                 либо даже работать с обеими одновременно
                 Поэтому Я СЧИТАЮ, что хорошо бы знать про отличительные особенности этих СУБД
+
+                И тут еще небольшая оговорка, из-за того, что я в последние несколько лет и в проде использую постгрес и
+                курс для студентов у нас построен тоже вокруг него,<br>
+                свое повествование я буду строить немного относительно постгреса, не сочтите это за предвзятость, <br>
+                у меня нет цели сравнить плюсы и минусы и назвать победителя
             </aside>
         </section>
 
         <section>
-            <h3>Сравнение функций</h3>
-            <table>
-                <thead>
-                <tr>
-                    <th>PostgreSQL</th>
-                    <th>MySQL</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>Объектно-реляционная СУБД</td>
-                    <td>Реляционная СУБД</td>
-                </tr>
-                </tbody>
-            </table>
-            <aside class="notes">Если погуглить про разницу, то большинство статей и роликов на youtube будут
-                ограничиваться сравнением набора фич.
-                И если ставить вопрос именно о выборе субд для своего проекта, то этого критерия было достаточно для
-                маленьких и средних проектов.
-            </aside>
-        </section>
-
-        <section>
-            <h3>Сравнение функций</h3>
+            <h3 class="slide-header">Сравнение функций</h3>
             <table class="r-fit-text">
                 <thead>
                 <tr>
@@ -154,10 +137,19 @@
                     <td>Есть</td>
                     <td>Есть</td>
                 </tr>
+                <tr>
+                    <td>Tранзакционный DDL</td>
+                    <td>Есть</td>
+                    <td>Есть</td>
+                </tr>
                 </tbody>
             </table>
             <aside class="notes">
-                Было раньше.
+                Если погуглить про разницу, то большинство статей и роликов на youtube будут
+                ограничиваться сравнением набора фич.
+                И если ставить вопрос именно о выборе субд для своего проекта, то этого критерия было достаточно для
+                маленьких и средних проектов.
+                Но то было раньше.
                 На протяжении многих все сравнение и муки выбора можно было сводить просто к выбору нужной фичи, но
                 внезапно за последние несколько лет основная функциональность этих СУБД примерно выравнялась.
                 ДА, надо понимать, что работают эти фичи тоже с разной эффективностью и со своими особенностями.
@@ -167,10 +159,15 @@
         </section>
 
         <section>
-            <h3 class="slide-header">Процессы и потоки</h3>
+            <h3 class="r-fit-text">Процессы и потоки</h3>
+            <aside class="notes"></aside>
+        </section>
+
+        <section>
+            <h3 class="slide-header">Процессы PostgreSQL</h3>
             <img class="r-stretch" src="static/img/pg_process_model.png" alt="postgres process model"/>
             <aside class="notes">
-                Под понятием "PostgreSQL server" обычно подразумевается набор процессов:
+                Под "PostgreSQL server" обычно подразумевается набор процессов:
                 <ul>
                     <li>Процесс "postgres server" (ранее postmaster), являющийся родительским для всех остальных
                         процессов
@@ -197,9 +194,16 @@
    \--= 49086 n.strelkov postgres: n.strelkov movielens [local] idle in transaction
             </code></pre>
             <aside class="notes">
-                The actual processes of a PostgreSQL server is shown here. In the following example, one postgres server
-                process (pid is 9687), two backend processes (pids are 9697 and 9717) and the several background
-                processes listed in Table 2.1 are running.
+                Вот я для примера на своем ноуте запустил postgres server, <br>
+                открыл два терминала, <br>
+                подключился в них консольным клиентом psql к серверу, <br>
+                и распечатал показания утилиты pstree для основого процесса postgres server<br>
+                Посмотрим повнимательнее: <br>
+                В 3 строке мы как раз видим основной процесс Postgres Server <br>
+                Который в свою очередь породил два дочерних backend процесса на каждое соединение, установленное через
+                psql <br>
+                Один висит и ничего не делает, а второй висит с открытой в нем транзакцией<br>
+                А также мы видим набор служебных процессов для различных функций
             </aside>
         </section>
 
@@ -216,7 +220,13 @@
                 --log-error=n-strelkov.err \
                 --pid-file=n-strelkov.pid
             </code></pre>
-            <aside class="notes"></aside>
+            <aside class="notes">
+                Те же подготовительные операции я проделал с mysql сервером <br>
+                но тут мы уже видим всего один основной и один дочерний процесс <br>
+                mysqld_safe - это просто дополнительная обертка рекомендованная для запуска mysql сервера в
+                UNIX-подобных ОС <br>
+                но ключевое тут то, что несмотря на два подключенных клиента мы не видим процессы, как так? :)
+            </aside>
         </section>
 
         <section>
@@ -348,11 +358,842 @@ Variable_name: Threads_running
         <section>
             <h3 class="slide-header">Путь запроса MySQL</h3>
             <img class="r-stretch" src="static/img/mysql_query_path.png" alt="mysql query path">
+            <aside class="notes">
+                Схема немного другая, но если присмотреться, то суть примерно та же. Отдельные компоненты, отвечают за:
+                <ul>
+                    <li>парсинг или синтаксический разбор</li>
+                    <li>семантический разбор и подготовку запроса</li>
+                    <li>планирование и оптимизацию</li>
+                    <li>выполнение запроса</li>
+                </ul>
+                Но обратите внимание на один важный нюанс:<br>
+                executor выполняет запрос к компоненту под названием Storage Engine через специальное API<br>
+                А что такое API? Это интерфейс абстрагирующий клиента, в данном случае исполнителя и оптимизатор, от
+                реализации хранилища.
+            </aside>
+        </section>
+
+        <section>
+            <h3 class="r-fit-text">Статистика</h3>
             <aside class="notes"></aside>
         </section>
 
         <section>
-            <h3 class="slide-header"></h3>
+            <h3 class="slide-header">Статистика по таблицам</h3>
+            <table class="r-fit-text">
+                <thead>
+                <tr>
+                    <th>MySQL</th>
+                    <th>PostgreSQL</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Размер кластерного индекса</td>
+                    <td>Размер таблицы</td>
+                </tr>
+                <tr>
+                    <td>количество строк</td>
+                    <td>количество строк</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>количество страниц в памяти</td>
+                </tr>
+                </tbody>
+            </table>
+            <aside class="notes">
+            </aside>
+        </section>
+
+        <section>
+            <h3 class="slide-header">Статистика по атрибутам</h3>
+            <table class="r-fit-text">
+                <thead>
+                <tr>
+                    <th>MySQL</th>
+                    <th>PostgreSQL</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Распределение данных, в т.ч. доля null значений</td>
+                    <td>Доля null значение</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Средний размер колонки в байтах</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Количество уникальных значений</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Статистическая корреляция между физическим порядком строк и логическим порядком значений
+                        столбца
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Распределение данных</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Наиболее часто встречаемые значения и их частота</td>
+                </tr>
+                </tbody>
+            </table>
+            <aside class="notes">
+            </aside>
+        </section>
+
+        <section>
+            <h3 class="slide-header">Межатрибутная статистика</h3>
+            <table>
+                <thead>
+                <tr>
+                    <th>MySQL</th>
+                    <th>PostgreSQL</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td></td>
+                    <td>Функциональные зависимости</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Количество уникальных значений</td>
+                </tr>
+                </tbody>
+            </table>
+            <aside class="notes">
+                И вот именно благодаря тому, что postgres может собирать больше статистики, он в среднем лучше подходит
+                для сложных аналитических запросов<br>
+                С большим количеством join, аггрегациями, табличными выражениями и тд
+            </aside>
+        </section>
+
+        <section>
+            <dl style="display: block; text-align: center;">
+                <dt><strong style="font-size: 50pt; color: #0075ff">A</strong>tomicity - Атомарность</dt>
+            </dl>
+            <dl style="display: block; text-align: center;">
+                <dt><strong style="font-size: 50pt; color: #0075ff">C</strong>onsistency - Согласованность</dt>
+            </dl>
+            <dl style="display: block; text-align: center;">
+                <dt><strong style="font-size: 50pt; color: #0075ff">I</strong>solation - Изолированность</dt>
+            </dl>
+            <dl style="display: block; text-align: center;">
+                <dt><strong style="font-size: 50pt; color: #0075ff">D</strong>urability - Долговечность</dt>
+            </dl>
+            <aside class="notes">
+                <dl>
+                    <dt>Атомарность</dt>
+                    <dd>Атомарность гарантирует, что никакая транзакция не будет зафиксирована в системе частично</dd>
+                </dl>
+                <dl>
+                    <dt>Согласованность</dt>
+                    <dd>каждая успешная транзакция по определению фиксирует только допустимые результаты</dd>
+                </dl>
+                <dl>
+                    <dt>Изолированность</dt>
+                    <dd>Во время выполнения транзакции параллельные транзакции не должны оказывать влияние на её
+                        результат
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>Долговечность</dt>
+                    <dd>изменения, сделанные успешно завершённой транзакцией, должны остаться сохранёнными после
+                        возвращения системы в работу
+                    </dd>
+                </dl>
+            </aside>
+        </section>
+
+        <section>
+            <h3 class="slide-header">MVCC</h3>
+            <p>Multi Version Concurrency Control</p>
+
+            <aside class="notes">
+                MVCC это подход к организации конкурентной обработки данных, основанный на идее одновременного хранения
+                нескольких версий объекта, так чтобы операции чтения и записи не конфликтовали
+                <br>
+                Под операцией записи имеется ввиду
+                Here WRITE means UPDATE and DELETE, as newly INSERTed record anyway will be protected as per isolation
+                level. Each WRITE operation produces a new version of the object and each concurrent read operation
+                reads a different version of the object depending on the isolation level. Since read and write both
+                operating on different versions of the same object so none of these operations required to completely
+                lock and hence both can operate concurrently. The only case where the contention can still exist is when
+                two concurrent transaction tries to WRITE the same record.
+
+                Most of the current major database supports MVCC. The intention of this algorithm is maintaining
+                multiple versions of the same object so the implementation of MVCC differs from database to database
+                only in terms of how multiple versions are created and maintained. Accordingly, corresponding database
+                operation and storage of data changes.
+
+                Most recognized approach to implements MVCC is the one used by PostgreSQL and Firebird/Interbase and
+                another one is used by InnoDB and Oracle. In subsequent sections, we will discuss in detail how it has
+                been implemented in PostgreSQL and InnoDB.
+            </aside>
+        </section>
+
+        <section>
+            <h3 class="slide-header">MVCC PostgreSQL</h3>
+            <img class="r-fit-text" src="static/img/mvcc_pg.png" alt="pg mvcc">
+            <aside class="notes"></aside>
+        </section>
+
+        <section class="slide">
+            <h3 class="slide-header">MVCC 1: TABLE</h3>
+            <table class="r-fit-text">
+                <thead>
+                <tr>
+                    <th>action</th>
+                    <th>
+                        <div class="label-r">TXID: 103</div>
+                        xmin
+                    </th>
+                    <th>xmax</th>
+                    <th>id</th>
+                    <th>name</th>
+                    <th>notes</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td></td>
+                    <td>100</td>
+                    <td>0</td>
+                    <td>1</td>
+                    <td>Alice</td>
+                    <td>Great at programming</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>101</td>
+                    <td>0</td>
+                    <td>2</td>
+                    <td>Bob</td>
+                    <td>Always talk to alice</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>102</td>
+                    <td>0</td>
+                    <td>3</td>
+                    <td>Eve</td>
+                    <td>Listens to everyone's conversations</td>
+                </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="slide">
+            <h3 class="slide-header">MVCC 2: UPDATE</h3>
+            <table class="r-fit-text">
+                <thead>
+                <tr>
+                    <th>action</th>
+                    <th>
+                        <div class="label-r">TXID: 103</div>
+                        xmin
+                    </th>
+                    <th>xmax</th>
+                    <th>id</th>
+                    <th>name</th>
+                    <th>notes</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td></td>
+                    <td>100</td>
+                    <td>0</td>
+                    <td>1</td>
+                    <td>Alice</td>
+                    <td>Great at programming</td>
+                </tr>
+                <tr class="update">
+                    <td>- update</td>
+                    <td>101</td>
+                    <td>0</td>
+                    <td>2</td>
+                    <td>Bob</td>
+                    <td>Always talk to alice</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>102</td>
+                    <td>0</td>
+                    <td>3</td>
+                    <td>Eve</td>
+                    <td>Listens to everyone's conversations</td>
+                </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="slide">
+            <h3 class="slide-header">MVCC 3: UPDATE IN PROGRESS</h3>
+            <table class="r-fit-text">
+                <thead>
+                <tr>
+                    <th>action</th>
+                    <th>
+                        <div class="label-r">TXID: 103</div>
+                        xmin
+                    </th>
+                    <th>xmax</th>
+                    <th>id</th>
+                    <th>name</th>
+                    <th>notes</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td></td>
+                    <td>100</td>
+                    <td>0</td>
+                    <td>1</td>
+                    <td>Alice</td>
+                    <td>Great at programming</td>
+                </tr>
+                <tr class="update obsolete">
+                    <td>- update</td>
+                    <td>101</td>
+                    <td class="changed">103</td>
+                    <td>2</td>
+                    <td>Bob</td>
+                    <td>Always talk to alice</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>102</td>
+                    <td>0</td>
+                    <td>3</td>
+                    <td>Eve</td>
+                    <td>Listens to everyone's conversations</td>
+                </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="slide">
+            <h3 class="slide-header">MVCC 4: UPDATE IN PROGRESS</h3>
+            <table class="r-fit-text">
+                <thead>
+                <tr>
+                    <th>action</th>
+                    <th>
+                        <div class="label-r">TXID: 103</div>
+                        xmin
+                    </th>
+                    <th>xmax</th>
+                    <th>id</th>
+                    <th>name</th>
+                    <th>notes</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td></td>
+                    <td>100</td>
+                    <td>0</td>
+                    <td>1</td>
+                    <td>Alice</td>
+                    <td>Great at programming</td>
+                </tr>
+                <tr class="update obsolete">
+                    <td>- update</td>
+                    <td>101</td>
+                    <td class="changed">103</td>
+                    <td>2</td>
+                    <td>Bob</td>
+                    <td>Always talk to alice</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>102</td>
+                    <td>0</td>
+                    <td>3</td>
+                    <td>Eve</td>
+                    <td>Listens to everyone's conversations</td>
+                </tr>
+                <tr class="update changed">
+                    <td>+ update</td>
+                    <td>103</td>
+                    <td>0</td>
+                    <td>2</td>
+                    <td>Bob</td>
+                    <td>Working very hard</td>
+                </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="slide">
+            <h3 class="slide-header">MVCC 5: UPDATED</h3>
+            <table class="r-fit-text">
+                <thead>
+                <tr>
+                    <th>action</th>
+                    <th>
+                        <div class="label-r">TXID: 104</div>
+                        xmin
+                    </th>
+                    <th>xmax</th>
+                    <th>id</th>
+                    <th>name</th>
+                    <th>notes</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td></td>
+                    <td>100</td>
+                    <td>0</td>
+                    <td>1</td>
+                    <td>Alice</td>
+                    <td>Great at programming</td>
+                </tr>
+                <tr class="update obsolete">
+                    <td></td>
+                    <td>101</td>
+                    <td class="changed">103</td>
+                    <td>2</td>
+                    <td>Bob</td>
+                    <td>Always talk to alice</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>102</td>
+                    <td>0</td>
+                    <td>3</td>
+                    <td>Eve</td>
+                    <td>Listens to everyone's conversations</td>
+                </tr>
+                <tr class="update changed">
+                    <td></td>
+                    <td>103</td>
+                    <td>0</td>
+                    <td>2</td>
+                    <td>Bob</td>
+                    <td>Working very hard</td>
+                </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="slide">
+            <h3 class="slide-header">MVCC 6: INSERT</h3>
+            <table class="r-fit-text">
+                <thead>
+                <tr>
+                    <th>action</th>
+                    <th>
+                        <div class="label-r">TXID: 104</div>
+                        xmin
+                    </th>
+                    <th>xmax</th>
+                    <th>id</th>
+                    <th>name</th>
+                    <th>notes</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td></td>
+                    <td>100</td>
+                    <td>0</td>
+                    <td>1</td>
+                    <td>Alice</td>
+                    <td>Great at programming</td>
+                </tr>
+                <tr class="update obsolete">
+                    <td></td>
+                    <td>101</td>
+                    <td class="changed">103</td>
+                    <td>2</td>
+                    <td>Bob</td>
+                    <td>Always talk to alice</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>102</td>
+                    <td>0</td>
+                    <td>3</td>
+                    <td>Eve</td>
+                    <td>Listens to everyone's conversations</td>
+                </tr>
+                <tr class="update changed">
+                    <td></td>
+                    <td>103</td>
+                    <td>0</td>
+                    <td>2</td>
+                    <td>Bob</td>
+                    <td>Working very hard</td>
+                </tr>
+                <tr class="insert">
+                    <td>+ insert</td>
+                    <td>104</td>
+                    <td>0</td>
+                    <td>4</td>
+                    <td>Dave</td>
+                    <td>Very promising new-hire</td>
+                </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="slide">
+            <h3 class="slide-header">MVCC 7: INSERTED</h3>
+            <table class="r-fit-text">
+                <thead>
+                <tr>
+                    <th>action</th>
+                    <th>
+                        <div class="label-r">TXID: 105</div>
+                        xmin
+                    </th>
+                    <th>xmax</th>
+                    <th>id</th>
+                    <th>name</th>
+                    <th>notes</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td></td>
+                    <td>100</td>
+                    <td>0</td>
+                    <td>1</td>
+                    <td>Alice</td>
+                    <td>Great at programming</td>
+                </tr>
+                <tr class="update obsolete">
+                    <td></td>
+                    <td>101</td>
+                    <td class="changed">103</td>
+                    <td>2</td>
+                    <td>Bob</td>
+                    <td>Always talk to alice</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>102</td>
+                    <td>0</td>
+                    <td>3</td>
+                    <td>Eve</td>
+                    <td>Listens to everyone's conversations</td>
+                </tr>
+                <tr class="update changed">
+                    <td></td>
+                    <td>103</td>
+                    <td>0</td>
+                    <td>2</td>
+                    <td>Bob</td>
+                    <td>Working very hard</td>
+                </tr>
+                <tr class="insert">
+                    <td></td>
+                    <td>104</td>
+                    <td>0</td>
+                    <td>4</td>
+                    <td>Dave</td>
+                    <td>Very promising new-hire</td>
+                </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="slide">
+            <h3 class="slide-header">MVCC 8: DELETE</h3>
+            <table class="r-fit-text">
+                <thead>
+                <tr>
+                    <th>action</th>
+                    <th>
+                        <div class="label-r">TXID: 105</div>
+                        xmin
+                    </th>
+                    <th>xmax</th>
+                    <th>id</th>
+                    <th>name</th>
+                    <th>notes</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td></td>
+                    <td>100</td>
+                    <td>0</td>
+                    <td>1</td>
+                    <td>Alice</td>
+                    <td>Great at programming</td>
+                </tr>
+                <tr class="update obsolete">
+                    <td></td>
+                    <td>101</td>
+                    <td class="changed">103</td>
+                    <td>2</td>
+                    <td>Bob</td>
+                    <td>Always talk to alice</td>
+                </tr>
+                <tr class="delete obsolete">
+                    <td>- delete</td>
+                    <td>102</td>
+                    <td>105</td>
+                    <td>3</td>
+                    <td>Eve</td>
+                    <td>Listens to everyone's conversations</td>
+                </tr>
+                <tr class="update changed">
+                    <td></td>
+                    <td>103</td>
+                    <td>0</td>
+                    <td>2</td>
+                    <td>Bob</td>
+                    <td>Working very hard</td>
+                </tr>
+                <tr class="insert">
+                    <td></td>
+                    <td>104</td>
+                    <td>0</td>
+                    <td>4</td>
+                    <td>Dave</td>
+                    <td>Very promising new-hire</td>
+                </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="slide">
+            <h3 class="slide-header">MVCC 9: DELETED</h3>
+            <table class="r-fit-text">
+                <thead>
+                <tr>
+                    <th>action</th>
+                    <th>
+                        <div class="label-r">TXID: 106</div>
+                        xmin
+                    </th>
+                    <th>xmax</th>
+                    <th>id</th>
+                    <th>name</th>
+                    <th>notes</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td></td>
+                    <td>100</td>
+                    <td>0</td>
+                    <td>1</td>
+                    <td>Alice</td>
+                    <td>Great at programming</td>
+                </tr>
+                <tr class="update obsolete">
+                    <td></td>
+                    <td>101</td>
+                    <td class="changed">103</td>
+                    <td>2</td>
+                    <td>Bob</td>
+                    <td>Always talk to alice</td>
+                </tr>
+                <tr class="delete obsolete">
+                    <td></td>
+                    <td>102</td>
+                    <td>105</td>
+                    <td>3</td>
+                    <td>Eve</td>
+                    <td>Listens to everyone's conversations</td>
+                </tr>
+                <tr class="update changed">
+                    <td></td>
+                    <td>103</td>
+                    <td>0</td>
+                    <td>2</td>
+                    <td>Bob</td>
+                    <td>Working very hard</td>
+                </tr>
+                <tr class="insert">
+                    <td></td>
+                    <td>104</td>
+                    <td>0</td>
+                    <td>4</td>
+                    <td>Dave</td>
+                    <td>Very promising new-hire</td>
+                </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h3 class="slide-header">MVCC MySQL InnoDB</h3>
+            <img class="r-fit-text" src="static/img/mvcc_innodb.png" alt="mysql innodb mvcc" style="margin-top: -15px;">
+            <aside class="notes">
+                In order to support multiple versions, InnoDB maintains additional fields for each row as mentioned
+                below:
+
+                DB_TRX_ID: Transaction ID of the transaction which inserted or updated the row.
+                DB_ROLL_PTR: It is also called the roll pointer and it points to undo log record written to the rollback
+                segment (more on this next).
+                Like PostgreSQL, InnoDB also creates multiple versions of the row as part of all operation but the
+                storage of the older version is different.
+
+                In case of InnoDB, the old version of the changed row is kept in a separate tablespace/storage (called
+                undo segment). <b>So unlike PostgreSQL, InnoDB keeps only the latest version of rows in the main storage
+                area and the older version is kept in the undo segment.</b> Row versions from the undo segment are used to
+                undo operation in case of rollback and for reading an older version of rows by READ statement depending
+                on the isolation level.
+
+                Consider there are two rows, T1 (with value 1) and T2 (with value 2) for a table, the creation of new
+                rows can be demonstrated in below 3 steps:
+
+                As seen from the figure, initially there are two rows in the database with values 1 and 2.
+
+                Then in as per second stage, the row T2 with value 2 gets updated with the value 3. At this point, a new
+                version is created with the new value and it replaces the older version. Before that, the older version
+                gets stored in the undo segment (notice the UNDO segment version has only a delta value). Also, note
+                that there is one pointer from the new version to the older version in the rollback segment. So unlike
+                PostgreSQL, InnoDB update is “IN-PLACE”.
+
+                Similarly, in the third step, when row T1 with value 1 gets deleted, then the existing row gets
+                virtually deleted (i.e. it just marks a special bit in the row) in the main storage area and a new
+                version corresponding to this gets added in the Undo segment. Again, there is one roll pointer from the
+                main storage to the undo segment.
+
+                All operations behave in the same way as in the case of PostgreSQL when seen from outside. Just internal
+                storage of multiple version differs.
+
+            </aside>
+        </section>
+
+        <section>
+            <h3 class="slide-header">Сравнение реализаций MVCC</h3>
+            <ol>
+                <li>Размер старой версии объекта</li>
+                <li>INSERT</li>
+                <li>Восстановление предыдущей версии в случае отката транзакции</li>
+                <li>Освобождение места занятого старой версией</li>
+                <li>Влияние задержек очистки мертвых кортежей</li>
+                <li>Последовательное сканирование "распухшей таблицы"</li>
+                <li>Индексы</li>
+            </ol>
+            <aside class="notes">
+                <ol>
+                    <li>
+                        Size of an older version
+                        PostgreSQL just updates xmax on the older version of the tuple, so the size of the older version
+                        remains the same to the corresponding inserted record. This means if you have 3 versions of an
+                        older tuple then all of them will have the same size (except the difference in actual data size
+                        if any at each update).
+
+                        Whereas in case of InnoDB, the object version stored in the Undo segment is typically smaller
+                        than the corresponding inserted record. This is because only the changed values (i.e.
+                        differential) are written to UNDO log.
+                    </li>
+                    <li>
+                        INSERT operation
+                        InnoDB needs to write one additional record in the UNDO segment even for INSERT whereas
+                        PostgreSQL creates new version only in case of UPDATE.
+                    </li>
+                    <li>
+                        Restoring an older version in case of rollback
+                        PostgreSQL does not need to anything specific in order to restore an older version in case of
+                        rollback. Remember the older version has xmax equal to the transaction which updated this tuple.
+                        So, till this transaction id gets committed, it is considered to be alive tuple for a concurrent
+                        snapshot. Once the transaction is rollbacked, the corresponding transaction will be
+                        automatically considered alive for all transaction as it will be an aborted transaction.
+                        Whereas in case of InnoDB, it is explicitly required to rebuild the older version of the object
+                        once rollback happens.
+                    </li>
+                    <li>
+                        Reclaiming space occupied by an older version
+                        In case of PostgreSQL, the space occupied by an older version can be considered dead only when
+                        there is no parallel snapshot to read this version. Once the older version is dead, then the
+                        VACUUM operation can reclaim the space occupied by them. VACUUM can be triggered manually or as
+                        a background task depending on the configuration.
+                        InnoDB UNDO logs are primarily divided into INSERT UNDO and UPDATE UNDO. The first one gets
+                        discarded as soon as the corresponding transaction commits. The second one needs to preserve
+                        till it is parallel to any other snapshot. InnoDB does not have explicit VACUUM operation but on
+                        a similar line it has asynchronous PURGE to discard UNDO logs which runs as a background task.
+                    </li>
+                    <li> Impact of delayed vacuum
+                        As discussed in a previous point, there is a huge impact of delayed vacuum in case of
+                        PostgreSQL. It causes the table to start bloating and causing storage space to increase even
+                        though records are constantly deleted. It may also reach a point where VACUUM FULL needs to be
+                        done which is very costly operations.
+                    </li>
+                    <li> Sequential scan in case of bloated table
+                        PostgreSQL sequential scan must traverse through all older version of an object even though all
+                        of them
+                        are dead (till they are removed using vacuum). This is the typical and most talked about problem
+                        in
+                        PostgreSQL. Remember PostgreSQL stores all versions of a tuple in the same storage.
+                        Whereas in case of InnoDB, it does not need to read Undo record unless it is required. In case
+                        all undo
+                        records are dead, then it will be only enough to read through all the latest version of the
+                        objects.
+                    </li>
+                    <li>
+                        Index
+                        PostgreSQL stores index in a separate storage which keeps one link to actual data in HEAP. So
+                        PostgreSQL
+                        has to update INDEX part also even though there was no change in INDEX. Though later this issue
+                        was
+                        fixed by implementing HOT (Heap Only Tuple) update but still it has the limitation that if a new
+                        heap
+                        tuple can’t be accommodated in the same page, then it fallback to normal UPDATE.
+
+                        InnoDB does not have this problem as they use clustered index.
+                    </li>
+                </ol>
+                <p> Conclusion
+                    PostgreSQL MVCC has got few drawbacks especially in terms of bloated storage if your workload has
+                    frequent UPDATE/DELETE. So if you decide to use PostgreSQL you should be very careful to configure
+                    VACUUM wisely.
+
+                    PostgreSQL community has also acknowledged this as a major issue and they have already started
+                    working
+                    on UNDO based MVCC approach (tentative name as ZHEAP) and we might see the same in a future release.
+                </p>
+            </aside>
+        </section>
+
+        <section>
+            <h3 class="r-fit-text">Индексы</h3>
+            <aside class="notes"></aside>
+        </section>
+
+
+        <section>
+            <h3 class="r-fit-text">Спасибо за внимание!</h3>
+            <footer>Вопросы, пожелания, предложения, замечания и критику прошу направлять сюда:
+                <ul style="list-style: none;">
+                    <li><a href="mailto:nikita.strelkov@gmail.com">nikita.strelkov@gmail.com</a></li>
+                    <li>Telegram: <a href="https://t.me/nikitastrelkov">@NikitaStrelkov</a></li>
+                </ul>
+            </footer>
+            <aside class="notes"></aside>
+        </section>
+
+        <section>
+            <p>Материалы:</p>
+            <ul>
+                <li><a href="https://dev.mysql.com/doc/internals/en/innodb.html">MySQL Internals Documentation</a></li>
+                <li><a href="https://www.postgresql.org/docs/current/internals.html">Postgres Internals
+                    Documentation</a></li>
+                <li><a href="https://www.interdb.jp/pg/">The Internals of PostgreSQL by Hironobu Suziki</a></li>
+                <li><a href="https://severalnines.com/database-blog/comparing-data-stores-postgresql-mvcc-vs-innodb">Comparing
+                    data stores postgresql mvcc vs innodb</a></li>
+                <li>
+                    <a href="https://severalnines.com/database-blog/postgresql-index-vs-innodb-index-understanding-differences">Postgresql
+                        index vs innodb index understanding differences</a></li>
+                <li><a href="https://github.com/ChrisAntognini"></a></li>
+            </ul>
             <aside class="notes"></aside>
         </section>
     </div>

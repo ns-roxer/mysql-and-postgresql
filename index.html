@@ -54,7 +54,7 @@
         <section>
             <h3 class="slide-header">О чем доклад</h3>
             <ul>
-                <li>Сравнение функций</li>
+                <li>Сравнение функциональности</li>
                 <li>Процессная/потоковая модель сервера</li>
                 <li>Путь выполнения запроса</li>
                 <li>MVCC</li>
@@ -87,7 +87,7 @@
         </section>
 
         <section>
-            <h3 class="slide-header">Сравнение функций</h3>
+            <h3 class="slide-header">Сравнение функциональности</h3>
             <table class="r-fit-text">
                 <thead>
                 <tr>
@@ -520,9 +520,10 @@ Variable_name: Threads_running
                 MVCC это подход к организации конкурентной обработки данных, основанный на идее одновременного хранения
                 нескольких версий объекта, так чтобы операции чтения и записи не конфликтовали
                 <br>
-                Под операцией записи имеется ввиду
-                Here WRITE means UPDATE and DELETE, as newly INSERTed record anyway will be protected as per isolation
-                level. Each WRITE operation produces a new version of the object and each concurrent read operation
+                Под операцией записи имеется ввиду UPDATE и DELETE, так как только что добавленная новая запись
+                по-умолчанию будет защищена от других транзакций
+                <br>
+                Each WRITE operation produces a new version of the object and each concurrent read operation
                 reads a different version of the object depending on the isolation level. Since read and write both
                 operating on different versions of the same object so none of these operations required to completely
                 lock and hence both can operate concurrently. The only case where the contention can still exist is when
@@ -1046,9 +1047,8 @@ Variable_name: Threads_running
                 In case of InnoDB, the old version of the changed row is kept in a separate tablespace/storage (called
                 undo segment). <b>So unlike PostgreSQL, InnoDB keeps only the latest version of rows in the main storage
                 area and the older version is kept in the undo segment.</b> Row versions from the undo segment are used
-                to
-                undo operation in case of rollback and for reading an older version of rows by READ statement depending
-                on the isolation level.
+                to undo operation in case of rollback and for reading an older version of rows by READ statement
+                depending on the isolation level.
 
                 Consider there are two rows, T1 (with value 1) and T2 (with value 2) for a table, the creation of new
                 rows can be demonstrated in below 3 steps:
@@ -1257,10 +1257,12 @@ Variable_name: Threads_running
         <section>
             <h3 class="slide-header">Индексы в PostgreSQL</h3>
             <p>Есть поддержка составных, частичных и функциональных индексов.</p>
-            <pre><code class="" data-line-numbers="|1-2|3-4|5-6">CREATE INDEX idx_users_age_gender
+            <pre><code class="" data-line-numbers="|1-2|4-5|7-8">CREATE INDEX idx_users_age_gender
                 ON people(age, gender); -- составной
+
 CREATE INDEX idx_users_age_partial
                 ON people(age) where age >= 25; -- частичный
+
 CREATE INDEX idx_users_names
                 ON people(LOWER(name)); -- функциональный
             </code></pre>
